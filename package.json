@@ -1,0 +1,9 @@
+{
+  "name": "data-nosql",
+  "version": "1.0.0",
+  "description": "Module de CRUD nosql",
+  "main": "index.js",
+  "repository": "https://github.com/tbeghin/data-nosql.git",
+  "author": "tbeghin",
+  "license": "MIT"
+}
