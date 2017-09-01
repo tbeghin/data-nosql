@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "https://github.com/tbeghin/data-nosql.git",
   "author": "tbeghin",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^4.11.9"
+  }
 }

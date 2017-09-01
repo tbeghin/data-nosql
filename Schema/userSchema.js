@@ -1,3 +1,10 @@
-/**
- * Created by S834159 on 01/09/2017.
- */
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+
+module.exports(new Schema({
+    author    : ObjectId,
+    title     : String,
+    body      : String,
+    date      : Date
+}));
