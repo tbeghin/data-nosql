@@ -7,6 +7,7 @@
   "author": "tbeghin",
   "license": "MIT",
   "dependencies": {
-    "mongoose": "^4.11.9"
+    "mongoose": "^4.11.9",
+    "q": "^1.5.0"
   }
 }
