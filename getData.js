@@ -33,5 +33,9 @@ const save = function (dataBase, collection) {
     return defer.promise;
 };
 
+const handleError = function () {
+    return q.reject('Database not connected !!!');
+};
+
 module.exports.getAll = getAll;
 module.exports.save = save;

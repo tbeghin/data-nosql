@@ -1,4 +1,4 @@
-// Inclusion de Mongoose
+const q = require('q');
 const getData = require('./getData');
 const createDb = require('./createDataBase');
 const model = require('./Schema/userSchema');
@@ -11,19 +11,15 @@ const init = function (dataBasePath) {
         db => {
             dataBase = db;
             model.getModel(dataBase);
-            module.exports({
-                getAll: getData.getAll(dataBase, "collection"),
-                get: "",
-                post: getData.save(dataBase, "collection"),
-                update: "",
-                delete: ""
-            });
         },
         error => {
         }
-    );
+    )
 };
 
-module.exports({
-    'init': init
-});
+module.exports.init = init;
+module.exports.getAll = getData.getAll;
+module.exports.get = "";
+module.exports.post = getData.save;
+module.exports.update = "";
+module.exports.delete = "";
