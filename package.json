@@ -8,6 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "mongoose": "^4.11.9",
-    "q": "^1.5.0"
+    "q": "^1.5.0",
+    "underscore": "^1.8.3"
   }
 }

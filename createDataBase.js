@@ -3,17 +3,15 @@ const mongoose = require('mongoose');
 const q = require('q');
 let dbConnection;
 
-const createDataBase = function () {
+const createDataBase = function (dataBasePath) {
     let defer = q.defer();
     if (dbConnection) {
         defer.resolve(dbConnection);
     }
     else {
-        // On se connecte à la base de données
-        // N'oubliez pas de lancer ~/mongodb/bin/mongod dans un terminal !
-        mongoose.createConnection('mongodb://localhost/blog').then(
+        mongoose.createConnection(dataBasePath).then(
             db => {
-                console.log("Connection OK");
+                console.log('Connection OK');
                 dbConnection = db;
                 defer.resolve(dbConnection);
             },
@@ -24,6 +22,4 @@ const createDataBase = function () {
     return defer.promise;
 };
 
-module.exports = {
-    createDataBase: createDataBase
-};
+module.exports.createDataBase = createDataBase;

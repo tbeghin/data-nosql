@@ -1,16 +1,29 @@
 // Inclusion de Mongoose
-const mongoose = require('mongoose');
 const getData = require('./getData');
 const createDb = require('./createDataBase');
-let db = createDb.createDataBase().then(
-    x => {},
-    error => {}
-);
+const model = require('./Schema/userSchema');
+const dataBasePathDefault = 'mongodb://localhost/test';
+
+let dataBase;
+
+const init = function (dataBasePath) {
+    createDb.createDataBase(dataBasePath || dataBasePathDefault).then(
+        db => {
+            dataBase = db;
+            model.getModel(dataBase);
+            module.exports({
+                getAll: getData.getAll(dataBase, "collection"),
+                get: "",
+                post: getData.save(dataBase, "collection"),
+                update: "",
+                delete: ""
+            });
+        },
+        error => {
+        }
+    );
+};
 
 module.exports({
-    getAll: getData.getAll(db),
-    get: "",
-    post:"",
-    update:"",
-    delete:""
+    'init': init
 });
