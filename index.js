@@ -1,21 +1,28 @@
 const q = require('q');
 const getData = require('./getData');
-const createDb = require('./createDataBase');
-const model = require('./Schema/userSchema');
-const dataBasePathDefault = 'mongodb://localhost/test';
+const dataBaseManager = require('./Manager/dataBaseManager');
+const modelManager = require('./Manager/modelManager');
 
 let dataBase;
 
 const init = function (dataBasePath) {
-    createDb.createDataBase(dataBasePath || dataBasePathDefault).then(
+    const defer = q.defer();
+    dataBaseManager.getDataBase(dataBasePath).then(
         db => {
             dataBase = db;
-            model.getModel(dataBase);
+            modelManager.initModel(dataBase);
+            defer.resolve(db);
         },
         error => {
+            defer.reject(error);
         }
-    )
+    );
+    return defer.promise;
 };
+
+function getConfigDataBase() {
+
+}
 
 module.exports.init = init;
 module.exports.getAll = getData.getAll;

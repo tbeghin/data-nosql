@@ -1,9 +1,9 @@
 const q = require("q");
-const modelList = require('./Schema/userSchema').modelList;
+const modelManager = require('./Manager/modelManager');
 
-const getAll = function (dataBase, collection) {
+const getAll = function (collection) {
     const defer = q.defer();
-    let model = modelList[collection];
+    let model = modelManager.getModel(collection);
     model.find(
         (err, docs) => {
             if (err) {
@@ -17,9 +17,9 @@ const getAll = function (dataBase, collection) {
     return defer.promise;
 };
 
-const save = function (dataBase, collection) {
+const save = function (data, collection) {
     const defer = q.defer();
-    let model = modelList[collection];
+    let model = modelManager.getModel(collection);
     model.save(
         (err) => {
             if (err) {
