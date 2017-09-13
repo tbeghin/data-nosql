@@ -7,8 +7,16 @@
   "author": "tbeghin",
   "license": "MIT",
   "dependencies": {
+    "eslint": "^4.6.1",
     "mongoose": "^4.11.9",
     "q": "^1.5.0",
     "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
   }
 }

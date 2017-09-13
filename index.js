@@ -5,28 +5,22 @@ const modelManager = require('./Manager/modelManager');
 
 let dataBase;
 
-const init = function (dataBasePath) {
+const init = function (dataBasePath, mongoPath) {
     const defer = q.defer();
-    dataBaseManager.getDataBase(dataBasePath).then(
+    dataBaseManager.getDataBase(dataBasePath, mongoPath).then(
         db => {
             dataBase = db;
             modelManager.initModel(dataBase);
             defer.resolve(db);
         },
-        error => {
-            defer.reject(error);
-        }
+        err => defer.reject(err)
     );
     return defer.promise;
 };
 
-function getConfigDataBase() {
-
-}
-
 module.exports.init = init;
 module.exports.getAll = getData.getAll;
-module.exports.get = "";
+module.exports.get = '';
 module.exports.post = getData.save;
-module.exports.update = "";
-module.exports.delete = "";
+module.exports.update = '';
+module.exports.delete = '';

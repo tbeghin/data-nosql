@@ -1,4 +1,4 @@
-const q = require("q");
+const q = require('q');
 const modelManager = require('./Manager/modelManager');
 
 const getAll = function (collection) {
@@ -31,10 +31,6 @@ const save = function (data, collection) {
         }
     );
     return defer.promise;
-};
-
-const handleError = function () {
-    return q.reject('Database not connected !!!');
 };
 
 module.exports.getAll = getAll;
