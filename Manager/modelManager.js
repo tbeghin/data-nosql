@@ -1,6 +1,6 @@
 const _ = require('underscore');
 const q = require('q');
-const getData = require('../getData');
+const crud = require('../Provider/crud');
 const dataBaseManager = require('./dataBaseManager');
 const mongoose = require('mongoose');
 let modelList = {};
@@ -26,7 +26,7 @@ const getModel = function (collection) {
 
 const createModelList = function (dataBase) {
     let defer = q.defer();
-    getData.getAll(dataBase, 'schema')
+    crud.getAll(dataBase, 'schema')
         .then(
             schemas => {
                 _.forEach(schemas,

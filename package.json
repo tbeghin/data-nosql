@@ -7,6 +7,7 @@
   "author": "tbeghin",
   "license": "MIT",
   "dependencies": {
+    "es6-promise": "^4.1.1",
     "eslint": "^4.6.1",
     "mongoose": "^4.11.9",
     "q": "^1.5.0",

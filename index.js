@@ -1,5 +1,6 @@
 const q = require('q');
-const getData = require('./getData');
+const _ = require('underscore');
+const crud = require('./Provider/crud');
 const dataBaseManager = require('./Manager/dataBaseManager');
 const modelManager = require('./Manager/modelManager');
 
@@ -7,6 +8,9 @@ let dataBase;
 
 const init = function (dataBasePath, mongoPath) {
     const defer = q.defer();
+    if (_.isEmpty(dataBasePath) || _.isEmpty(mongoPath)) {
+        defer.reject('Missing data');
+    }
     dataBaseManager.getDataBase(dataBasePath, mongoPath).then(
         db => {
             dataBase = db;
@@ -19,8 +23,8 @@ const init = function (dataBasePath, mongoPath) {
 };
 
 module.exports.init = init;
-module.exports.getAll = getData.getAll;
+module.exports.getAll = crud.getAll;
 module.exports.get = '';
-module.exports.post = getData.save;
+module.exports.save = crud.save;
 module.exports.update = '';
-module.exports.delete = '';
+module.exports.remove = '';

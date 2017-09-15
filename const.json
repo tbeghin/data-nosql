@@ -1,0 +1,4 @@
+{
+  "dataBasePathTest": "mongodb://localhost",
+  "collectionPathTest": "test"
+}
