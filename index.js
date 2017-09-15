@@ -1,45 +1,30 @@
-// Inclusion de Mongoose
-const mongoose = require('mongoose');
-let dbConnection;
+const q = require('q');
+const _ = require('underscore');
+const crud = require('./Provider/crud');
+const dataBaseManager = require('./Manager/dataBaseManager');
+const modelManager = require('./Manager/modelManager');
 
-// On se connecte à la base de données
-// N'oubliez pas de lancer ~/mongodb/bin/mongod dans un terminal !
-mongoose.createConnection('mongodb://localhost/blog').then(
-    db => {
-        console.log("Connection OK");
-        dbConnection = db;
-    },
-    err => console.error(`Connection failed : ${err}`)
-);
+let dataBase;
 
-module.exports({
-    getAll: "",
-    get: "",
-    post:"",
-    update:"",
-    delete:""
-});
-
-// Création du schéma pour les commentaires
-let commentaireArticleSchema = new mongoose.Schema({
-    pseudo: {type: String, match: /^[a-zA-Z0-9-_]+$/},
-    contenu: String,
-    date: {type: Date, default: Date.now}
-});
-
-// Création du Model pour les commentaires
-let CommentaireArticleModel = mongoose.model('commentaires', commentaireArticleSchema);
-
-// On crée une instance du Model
-let monCommentaire = new CommentaireArticleModel({pseudo: 'Atinux'});
-monCommentaire.contenu = 'Salut, super article sur Mongoose !';
-
-// On le sauvegarde dans MongoDB !
-monCommentaire.save(function (err) {
-    if (err) {
-        throw err;
+const init = function (dataBasePath, mongoPath) {
+    const defer = q.defer();
+    if (_.isEmpty(dataBasePath) || _.isEmpty(mongoPath)) {
+        defer.reject('Missing data');
     }
-    console.log('Commentaire ajouté avec succès !');
-    // On se déconnecte de MongoDB maintenant
-    mongoose.connection.close();
-});
+    dataBaseManager.getDataBase(dataBasePath, mongoPath).then(
+        db => {
+            dataBase = db;
+            modelManager.initModel(dataBase);
+            defer.resolve(db);
+        },
+        err => defer.reject(err)
+    );
+    return defer.promise;
+};
+
+module.exports.init = init;
+module.exports.getAll = crud.getAll;
+module.exports.get = '';
+module.exports.save = crud.save;
+module.exports.update = '';
+module.exports.remove = '';
