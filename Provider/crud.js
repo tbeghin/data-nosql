@@ -3,81 +3,91 @@ const modelManager = require('../Manager/modelManager');
 
 const getAll = function (collection) {
     return new Promise((resolve, reject) => {
-        let model = modelManager.getModel(collection);
-        model.find(
-            (err, docs) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve(docs);
-                }
-            }
+        modelManager.getModel(collection).then(
+            model => model.find(
+                (err, docs) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        resolve(docs);
+                    }
+                }),
+            err => reject(err)
         );
     });
 };
 
 const get = function (collection) {
     return new Promise((resolve, reject) => {
-        let model = modelManager.getModel(collection);
-        model.find(
-            (err, docs) => {
-                if (err) {
-                    reject(err);
+        modelManager.getModel(collection).then(
+            model => model.find(
+                (err, docs) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        resolve(docs);
+                    }
                 }
-                else {
-                    resolve(docs);
-                }
-            }
+            ),
+            err => reject(err)
         );
     });
 };
 
 const save = function (data, collection) {
     return new Promise((resolve, reject) => {
-        let model = modelManager.getModel(collection);
-        model(data);
-        model.save(
-            (err) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve('save ok');
-                }
-            }
-        );
+        modelManager.getModel(collection).then(
+            model => {
+                model(data);
+                model.save(
+                    (err) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        else {
+                            resolve('save ok');
+                        }
+                    },
+                    err => reject(err)
+                );
+            });
     });
 };
 
 const update = function (collection) {
     return new Promise((resolve, reject) => {
-        let model = modelManager.getModel(collection);
-        model.update(
-            (err, docs) => {
-                if (err) {
-                    reject(err);
+        modelManager.getModel(collection).then(
+            model => model.update(
+                (err, docs) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        resolve(docs);
+                    }
                 }
-                else {
-                    resolve(docs);
-                }
-            }
+            ),
+            err => reject(err)
         );
     });
 };
 
 const remove = function (collection) {
     return new Promise((resolve, reject) => {
-        let model = modelManager.getModel(collection);
-        model.find(
-            (err, docs) => {
-                if (err) {
-                    reject(err);
+        modelManager.getModel(collection).then(
+            model => model.find(
+                (err, docs) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        resolve(docs);
+                    }
                 }
-                else {
-                    resolve(docs);
-                }
-            }
+            ),
+            err => reject(err)
         );
     });
 };
