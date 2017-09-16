@@ -21,7 +21,7 @@ const getDataBase = function (collectionPath, dataBasePath) {
 const createDataBase = function (collectionPath, dataBasePath) {
     return new Promise((resolve, reject) => {
         let connectionPath = `${dataBasePath}\\${collectionPath}`;
-        mongoose.createConnection(connectionPath).then(
+        mongoose.createConnection(connectionPath, {useMongoClient: true}).then(
             db => {
                 dbConnection[collectionPath] = db;
                 resolve(db);
