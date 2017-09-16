@@ -2,6 +2,7 @@ const Promise = require('es6-promise').Promise;
 const modelManager = require('../Manager/modelManager');
 
 const getAll = function (collection) {
+    console.log('getAll');
     return new Promise((resolve, reject) => {
         modelManager.getModel(collection).then(
             model => model.find(

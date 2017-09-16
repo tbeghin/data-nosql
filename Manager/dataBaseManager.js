@@ -13,6 +13,7 @@ const getDataBase = function (collectionPath, dataBasePath) {
             }
         }
         else {
+            console.log('dbConnection exist -> resolve.');
             resolve(dbConnection);
         }
     });
@@ -23,7 +24,7 @@ const createDataBase = function (collectionPath, dataBasePath) {
         let connectionPath = `${dataBasePath}\\${collectionPath}`;
         mongoose.createConnection(connectionPath, {useMongoClient: true}).then(
             db => {
-                dbConnection[collectionPath] = db;
+                dbConnection = db;
                 resolve(db);
             },
             err => {
