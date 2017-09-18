@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.Promise = require('q').Promise;
 const _ = require('underscore');
 let dbConnection;
 
@@ -6,7 +7,10 @@ const getDataBase = function (collectionPath, dataBasePath) {
     return new Promise((resolve, reject) => {
         if (_.isUndefined(dbConnection)) {
             if (!_.isEmpty(collectionPath) && !_.isEmpty(dataBasePath)) {
-                createDataBase(collectionPath, dataBasePath);
+                createDataBase(collectionPath, dataBasePath).then(
+                    db => resolve(db),
+                    err => reject(err)
+                );
             }
             else {
                 reject('Create database connection before.');

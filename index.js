@@ -13,6 +13,7 @@ const init = function (dataBasePath, mongoPath) {
     }
     dataBaseManager.getDataBase(dataBasePath, mongoPath).then(
         db => {
+            console.log('getDataBase ok');
             dataBase = db;
             modelManager.initModel(dataBase);
             defer.resolve(db);

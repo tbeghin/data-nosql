@@ -1,9 +1,7 @@
 const _ = require('underscore');
 const q = require('q');
 const crud = require('../Provider/crud');
-const dataBaseManager = require('./dataBaseManager');
 const mongoose = require('mongoose');
-const schemaTypes = mongoose.Schema.Types;
 let modelList = {};
 
 const getModel = function (collection) {
@@ -12,15 +10,12 @@ const getModel = function (collection) {
     if (_.isEmpty(modelList)) {
         if (collection === 'schema') {
             console.log('collection is schema, build schema model.');
-            addModelToList('schema', {"name": schemaTypes.String, "schema": schemaTypes.Mixed})
+            addModelToList('schema', {'name': 'string', 'mongoSchema': 'mixed'});
+            testModelList(collection, defer);
         }
         else {
             console.log('modelList empty, get db to build modelList.');
-            dataBaseManager.getDataBase()
-                .then(
-                    dataBase => createModelList(dataBase),
-                    err => defer.reject(err)
-                )
+            createModelList()
                 .then(
                     () => testModelList(collection, defer),
                     err => defer.reject(err)
@@ -34,15 +29,16 @@ const getModel = function (collection) {
     return defer.promise;
 };
 
-const createModelList = function (dataBase) {
+const createModelList = function () {
     let defer = q.defer();
     console.log('createModelList');
-    crud.getAll(dataBase, 'schema')
+    crud.getAll('schema')
         .then(
             schemas => {
                 _.forEach(schemas,
                     schema => addModelToList(schema.name, schema.content)
                 );
+                console.log(modelList);
                 defer.resolve(modelList);
             },
             err => defer.reject(err)
@@ -50,13 +46,15 @@ const createModelList = function (dataBase) {
     return defer.promise;
 };
 
-function addModelToList(schemaName, schemaObject) {
-    let schema = new mongoose.Schema(schemaObject);
+function addModelToList (schemaName, schemaObject) {
+    let schema = new mongoose.Schema;
+    schema.add(schemaObject);
     modelList[schemaName] = mongoose.model(schemaName, schema);
 }
 
-function testModelList(collection, defer) {
+function testModelList (collection, defer) {
     if (_.has(modelList, collection)) {
+        console.log('testModelList : ' + collection);
         defer.resolve(modelList[collection]);
     }
     else {

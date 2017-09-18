@@ -5,15 +5,25 @@ const getAll = function (collection) {
     console.log('getAll');
     return new Promise((resolve, reject) => {
         modelManager.getModel(collection).then(
-            model => model.find(
-                (err, docs) => {
-                    if (err) {
-                        reject(err);
+            model => {
+                console.log('getAll return getModel : ' + model);
+                model.find({},
+                    (err, docs) => {
+                        if (err) {
+                            console.log(err);
+                            reject(err);
+                        }
+                        else {
+                            console.log(docs);
+                            resolve(docs);
+                        }
+                    }).then(
+                    x => {
+                        console.log(x);
+                        resolve(x);
                     }
-                    else {
-                        resolve(docs);
-                    }
-                }),
+                );
+            },
             err => reject(err)
         );
     });
