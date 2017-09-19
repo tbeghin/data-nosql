@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.Promise = require('q').Promise;
+mongoose.Promise = require('es6-promise').Promise;
 const _ = require('underscore');
 let dbConnection;
 
