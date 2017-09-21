@@ -1,14 +1,15 @@
+/*eslint no-console: 0*/
 const datanosql = require('./index.js');
 
-datanosql.init('calligramme', 'mongodb://localhost:27017').then(
-    () => {
-        setTimeout(
-            () => {
-                console.log('---> After init');
-                datanosql.getAll('users');
-            },
-            3000
-        );
-    },
-    err => console.error(err)
-);
+datanosql.init('calligramme', 'mongodb://localhost:27017')
+    .then(
+        () => datanosql.getAll('users'),
+        err => console.error(err)
+    )
+    .then(
+        data => console.log(data),
+        err => console.error(err)
+    )
+    .catch(
+        exception => console.error(exception)
+    );

@@ -7,10 +7,8 @@ let modelList = {};
 
 const getModel = function (collection) {
     return new Promise((resolve, reject) => {
-        console.log('getModel : ' + collection);
         if (_.isEmpty(modelList)) {
             if (collection === 'schemas') {
-                console.log('collection is schemas, build schema model.');
                 dataBaseManager.getDataBase()
                     .then(
                         db => addModelToList(collection, {name: 'string', mongoSchema: 'mixed'}, db)
@@ -22,10 +20,12 @@ const getModel = function (collection) {
                     .then(
                         model => resolve(model),
                         err => reject(err)
+                    )
+                    .catch(
+                        exception => reject(exception)
                     );
             }
             else {
-                console.log('modelList empty, get db to build modelList.');
                 dataBaseManager.getDataBase()
                     .then(
                         db => createModelList(db)
@@ -37,15 +37,20 @@ const getModel = function (collection) {
                     .then(
                         model => resolve(model),
                         err => reject(err)
+                    )
+                    .catch(
+                        exception => reject(exception)
                     );
             }
         }
         else {
-            console.log('modelList Exist -> test if content collection.');
             testModelList(collection)
                 .then(
                     model => resolve(model),
                     err => reject(err)
+                )
+                .catch(
+                    exception => reject(exception)
                 );
         }
     });
@@ -84,7 +89,6 @@ function addModelToList (schemaName, schemaObject, db) {
 function testModelList (collection) {
     return new Promise((resolve, reject) => {
         if (_.has(modelList, collection)) {
-            console.log('testModelList : ' + collection);
             resolve(modelList[collection]);
         }
         else {

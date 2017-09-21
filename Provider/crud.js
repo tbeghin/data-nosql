@@ -2,7 +2,6 @@ const Promise = require('es6-promise').Promise;
 const modelManager = require('../Manager/modelManager');
 
 const getAll = function (collection) {
-    console.log('getAll : ' + collection);
     return new Promise((resolve, reject) => {
         modelManager.getModel(collection)
             .then(
@@ -10,8 +9,6 @@ const getAll = function (collection) {
                     model.find()
                         .then(
                             docs => {
-                                console.log('Show data ' + collection + ' :');
-                                console.log(docs);
                                 resolve(docs);
                             },
                             err => reject(err))

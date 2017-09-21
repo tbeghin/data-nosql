@@ -12,14 +12,21 @@ const init = function (collectionPath, dataBasePath) {
             reject('Missing data');
         }
         else {
-            dataBaseManager.getDataBase(collectionPath, dataBasePath).then(
-                db => {
-                    dataBase = db;
-                    modelManager.initModel(dataBase);
-                    resolve(db);
-                },
-                err => reject(err)
-            );
+            dataBaseManager.getDataBase(collectionPath, dataBasePath)
+                .then(
+                    db => {
+                        dataBase = db;
+                        modelManager.initModel(dataBase)
+                            .then(
+                                () => resolve(db),
+                                err => reject(err)
+                            )
+                            .catch(
+                                exception => reject(exception)
+                            );
+                    },
+                    err => reject(err)
+                );
         }
     });
 };

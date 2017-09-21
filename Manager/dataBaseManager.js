@@ -11,6 +11,9 @@ const getDataBase = function (collectionPath, dataBasePath) {
                     .then(
                         db => resolve(db),
                         err => reject(err)
+                    )
+                    .catch(
+                        exception => reject(exception)
                     );
             }
             else {
@@ -18,7 +21,6 @@ const getDataBase = function (collectionPath, dataBasePath) {
             }
         }
         else {
-            console.log('dbConnection exist -> resolve.');
             resolve(dbConnection);
         }
     });
@@ -27,16 +29,19 @@ const getDataBase = function (collectionPath, dataBasePath) {
 const createDataBase = function (collectionPath, dataBasePath) {
     return new Promise((resolve, reject) => {
         let connectionPath = `${dataBasePath}/${collectionPath}`;
-        mongoose.createConnection(connectionPath, {useMongoClient: true}).then(
-            db => {
-                console.log('Connection to ' + connectionPath + ' OK');
-                dbConnection = db;
-                resolve(db);
-            },
-            err => {
-                reject(err);
-            }
-        );
+        mongoose.createConnection(connectionPath, {useMongoClient: true})
+            .then(
+                db => {
+                    dbConnection = db;
+                    resolve(db);
+                },
+                err => {
+                    reject(err);
+                }
+            )
+            .catch(
+                exception => reject(exception)
+            );
     });
 };
 
