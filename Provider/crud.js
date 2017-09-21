@@ -5,17 +5,10 @@ const getAll = function (collection) {
     return new Promise((resolve, reject) => {
         modelManager.getModel(collection)
             .then(
-                model => {
-                    model.find()
-                        .then(
-                            docs => {
-                                resolve(docs);
-                            },
-                            err => reject(err))
-                        .catch(
-                            exception => reject(exception)
-                        );
-                },
+                model => model.find(),
+                err => reject(err))
+            .then(
+                docs => resolve(docs),
                 err => reject(err))
             .catch(
                 exception => reject(exception)
@@ -23,77 +16,77 @@ const getAll = function (collection) {
     });
 };
 
-const get = function (collection) {
+const get = function (collection, query) {
     return new Promise((resolve, reject) => {
-        modelManager.getModel(collection).then(
-            model => model.find(
-                (err, docs) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    else {
-                        resolve(docs);
-                    }
-                }
-            ),
-            err => reject(err)
-        );
+        modelManager.getModel(collection)
+            .then(
+                model => model.find(query),
+                err => reject(err)
+            )
+            .then(
+                docs => resolve(docs),
+                err => reject(err)
+            )
+            .catch(
+                exception => reject(exception)
+            );
     });
 };
 
 const save = function (data, collection) {
     return new Promise((resolve, reject) => {
-        modelManager.getModel(collection).then(
-            model => {
-                model(data);
-                model.save(
-                    (err) => {
-                        if (err) {
-                            reject(err);
-                        }
-                        else {
-                            resolve('save ok');
-                        }
-                    },
-                    err => reject(err)
-                );
-            });
+        modelManager.getModel(collection)
+            .then(
+                model => {
+                    model(data);
+                    model.save();
+                },
+                err => reject(err)
+            )
+            .then(
+                docs => resolve(docs),
+                err => reject(err)
+            )
+            .catch(
+                exception => reject(exception)
+            );
     });
 };
 
-const update = function (collection) {
+const update = function (collection, data) {
     return new Promise((resolve, reject) => {
-        modelManager.getModel(collection).then(
-            model => model.update(
-                (err, docs) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    else {
-                        resolve(docs);
-                    }
-                }
-            ),
-            err => reject(err)
-        );
+        modelManager.getModel(collection)
+            .then(
+                model => {
+                    model(data);
+                    model.update();
+                },
+                err => reject(err)
+            )
+            .then(
+                docs => resolve(docs),
+                err => reject(err)
+            )
+            .catch(
+                exception => reject(exception)
+            );
     });
 };
 
 const remove = function (collection) {
     return new Promise((resolve, reject) => {
-        modelManager.getModel(collection).then(
-            model => model.find(
-                (err, docs) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    else {
-                        resolve(docs);
-                    }
-                }
-            ),
-            err => reject(err)
-        );
+        modelManager.getModel(collection)
+            .then(
+                model => model.remove(),
+                err => reject(err)
+            )
+            .then(
+                docs => resolve(docs),
+                err => reject(err)
+            )
+            .catch(
+                exception => reject(exception)
+            );
     });
 };
 

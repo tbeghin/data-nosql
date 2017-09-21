@@ -33,7 +33,7 @@ const init = function (collectionPath, dataBasePath) {
 
 module.exports.init = init;
 module.exports.getAll = crud.getAll;
-module.exports.get = '';
+module.exports.get = crud.get;
 module.exports.save = crud.save;
-module.exports.update = '';
-module.exports.remove = '';
+module.exports.update = crud.update;
+module.exports.remove = crud.remove;
