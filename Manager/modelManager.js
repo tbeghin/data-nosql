@@ -1,68 +1,96 @@
 const _ = require('underscore');
-const q = require('q');
+const Promise = require('es6-promise').Promise;
 const crud = require('../Provider/crud');
 const mongoose = require('mongoose');
 const dataBaseManager = require('./dataBaseManager');
 let modelList = {};
 
 const getModel = function (collection) {
-    let defer = q.defer();
-    console.log('getModel : ' + collection);
-    if (_.isEmpty(modelList)) {
-        if (collection === 'schema') {
-            console.log('collection is schema, build schema model.');
-            addModelToList('schema', {'name': 'string', 'mongoSchema': 'mixed'});
-            testModelList(collection, defer);
+    return new Promise((resolve, reject) => {
+        console.log('getModel : ' + collection);
+        if (_.isEmpty(modelList)) {
+            if (collection === 'schemas') {
+                console.log('collection is schemas, build schema model.');
+                dataBaseManager.getDataBase()
+                    .then(
+                        db => addModelToList(collection, {name: 'string', mongoSchema: 'mixed'}, db)
+                    )
+                    .then(
+                        () => testModelList(collection),
+                        err => reject(err)
+                    )
+                    .then(
+                        model => resolve(model),
+                        err => reject(err)
+                    );
+            }
+            else {
+                console.log('modelList empty, get db to build modelList.');
+                dataBaseManager.getDataBase()
+                    .then(
+                        db => createModelList(db)
+                    )
+                    .then(
+                        () => testModelList(collection),
+                        err => reject(err)
+                    )
+                    .then(
+                        model => resolve(model),
+                        err => reject(err)
+                    );
+            }
         }
         else {
-            console.log('modelList empty, get db to build modelList.');
-            dataBaseManager.getDataBase()
+            console.log('modelList Exist -> test if content collection.');
+            testModelList(collection)
                 .then(
-                    db => createModelList(db)
-                )
-                .then(
-                    () => testModelList(collection, defer),
-                    err => defer.reject(err)
+                    model => resolve(model),
+                    err => reject(err)
                 );
         }
-    }
-    else {
-        console.log('modelList Exist -> test if content collection.');
-        testModelList(collection, defer);
-    }
-    return defer.promise;
+    });
 };
 
 const createModelList = function (db) {
-    let defer = q.defer();
-    console.log('createModelList');
-    crud.getAll('schema')
-        .then(
-            schemas => {
-                _.forEach(schemas,
-                    schema => addModelToList(schema.name, schema.content, db)
-                );
-                console.log(modelList);
-                defer.resolve(modelList);
-            },
-            err => defer.reject(err)
-        );
-    return defer.promise;
+    return new Promise((resolve, reject) => {
+        crud.getAll('schemas')
+            .then(
+                schemas => {
+                    _.forEach(schemas,
+                        schema => addModelToList(schema.name, schema.content, db)
+                    );
+                    resolve(modelList);
+                },
+                err => reject(err))
+            .catch(
+                exception => reject(exception)
+            );
+    });
 };
 
 function addModelToList (schemaName, schemaObject, db) {
-    let schema = new mongoose.Schema(schemaObject);
-    modelList[schemaName] = db.model(schemaName, schema);
+    return new Promise((resolve, reject) => {
+        if (!_.isEmpty(db)) {
+            let schema = new mongoose.Schema(schemaObject);
+            modelList[schemaName] = db.model(schemaName, schema);
+            resolve();
+        }
+        else {
+            reject('No database');
+        }
+    });
 }
 
-function testModelList (collection, defer) {
-    if (_.has(modelList, collection)) {
-        console.log('testModelList : ' + collection);
-        defer.resolve(modelList[collection]);
-    }
-    else {
-        defer.reject(`No collection name ${collection} in database.`);
-    }
+function testModelList (collection) {
+    return new Promise((resolve, reject) => {
+        if (_.has(modelList, collection)) {
+            console.log('testModelList : ' + collection);
+            resolve(modelList[collection]);
+        }
+        else {
+            reject(`No collection name ${collection} in database.`);
+        }
+    });
 }
 
 module.exports.initModel = createModelList;

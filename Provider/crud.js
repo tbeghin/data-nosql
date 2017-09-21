@@ -4,28 +4,25 @@ const modelManager = require('../Manager/modelManager');
 const getAll = function (collection) {
     console.log('getAll : ' + collection);
     return new Promise((resolve, reject) => {
-        modelManager.getModel(collection).then(
-            model => {
-                console.log('getAll return getModel : ' + model);
-                model.find({},
-                    (err, docs) => {
-                        if (err) {
-                            console.log(err);
-                            reject(err);
-                        }
-                        else {
-                            console.log(docs);
-                            resolve(docs);
-                        }
-                    }).then(
-                    x => {
-                        console.log(x);
-                        resolve(x);
-                    }
-                );
-            },
-            err => reject(err)
-        );
+        modelManager.getModel(collection)
+            .then(
+                model => {
+                    model.find()
+                        .then(
+                            docs => {
+                                console.log('Show data ' + collection + ' :');
+                                console.log(docs);
+                                resolve(docs);
+                            },
+                            err => reject(err))
+                        .catch(
+                            exception => reject(exception)
+                        );
+                },
+                err => reject(err))
+            .catch(
+                exception => reject(exception)
+            );
     });
 };
 

@@ -7,10 +7,11 @@ const getDataBase = function (collectionPath, dataBasePath) {
     return new Promise((resolve, reject) => {
         if (_.isUndefined(dbConnection)) {
             if (!_.isEmpty(collectionPath) && !_.isEmpty(dataBasePath)) {
-                createDataBase(collectionPath, dataBasePath).then(
-                    db => resolve(db),
-                    err => reject(err)
-                );
+                createDataBase(collectionPath, dataBasePath)
+                    .then(
+                        db => resolve(db),
+                        err => reject(err)
+                    );
             }
             else {
                 reject('Create database connection before.');
@@ -25,9 +26,10 @@ const getDataBase = function (collectionPath, dataBasePath) {
 
 const createDataBase = function (collectionPath, dataBasePath) {
     return new Promise((resolve, reject) => {
-        let connectionPath = `${dataBasePath}\\${collectionPath}`;
+        let connectionPath = `${dataBasePath}/${collectionPath}`;
         mongoose.createConnection(connectionPath, {useMongoClient: true}).then(
             db => {
+                console.log('Connection to ' + connectionPath + ' OK');
                 dbConnection = db;
                 resolve(db);
             },

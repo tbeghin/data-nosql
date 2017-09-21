@@ -1,26 +1,27 @@
-const q = require('q');
 const _ = require('underscore');
+const Promise = require('es6-promise').Promise;
 const crud = require('./Provider/crud');
 const dataBaseManager = require('./Manager/dataBaseManager');
 const modelManager = require('./Manager/modelManager');
 
 let dataBase;
 
-const init = function (dataBasePath, mongoPath) {
-    const defer = q.defer();
-    if (_.isEmpty(dataBasePath) || _.isEmpty(mongoPath)) {
-        defer.reject('Missing data');
-    }
-    dataBaseManager.getDataBase(dataBasePath, mongoPath).then(
-        db => {
-            console.log('getDataBase ok');
-            dataBase = db;
-            modelManager.initModel(dataBase);
-            defer.resolve(db);
-        },
-        err => defer.reject(err)
-    );
-    return defer.promise;
+const init = function (collectionPath, dataBasePath) {
+    return new Promise((resolve, reject) => {
+        if (_.isEmpty(collectionPath) || _.isEmpty(dataBasePath)) {
+            reject('Missing data');
+        }
+        else {
+            dataBaseManager.getDataBase(collectionPath, dataBasePath).then(
+                db => {
+                    dataBase = db;
+                    modelManager.initModel(dataBase);
+                    resolve(db);
+                },
+                err => reject(err)
+            );
+        }
+    });
 };
 
 module.exports.init = init;
