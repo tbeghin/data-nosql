@@ -38,8 +38,8 @@ const save = function (data, collection) {
         modelManager.getModel(collection)
             .then(
                 model => {
-                    model(data);
-                    model.save();
+                    let saveData = new model(data);
+                    saveData.save();
                 },
                 err => reject(err)
             )

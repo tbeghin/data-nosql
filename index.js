@@ -6,26 +6,33 @@ const modelManager = require('./Manager/modelManager');
 
 let dataBase;
 
+/**
+ * Méthode de création de la base de donnée.
+ * @param collectionPath Nom de la collection.
+ * @param dataBasePath Path de la collection.
+ * @example ('test", 'mongodb://localhost:27017')
+ * @returns {Promise<any>} Renvoi la base de donnée.
+ */
 const init = function (collectionPath, dataBasePath) {
     return new Promise((resolve, reject) => {
         if (_.isEmpty(collectionPath) || _.isEmpty(dataBasePath)) {
-            reject('Missing data');
+            reject('Paramètre manquant');
         }
         else {
             dataBaseManager.getDataBase(collectionPath, dataBasePath)
                 .then(
                     db => {
                         dataBase = db;
-                        modelManager.initModel(dataBase)
-                            .then(
-                                () => resolve(db),
-                                err => reject(err)
-                            )
-                            .catch(
-                                exception => reject(exception)
-                            );
+                        modelManager.initModel(dataBase);
                     },
                     err => reject(err)
+                )
+                .then(
+                    () => resolve(dataBase),
+                    err => reject(err)
+                )
+                .catch(
+                    exception => reject(exception)
                 );
         }
     });
