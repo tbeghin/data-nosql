@@ -14,21 +14,28 @@ let dataBase;
  * @returns {Promise<any>} Renvoi la base de donnée.
  */
 const init = function (collectionPath, dataBasePath) {
+    console.log('-----Init-----');
     return new Promise((resolve, reject) => {
         if (_.isEmpty(collectionPath) || _.isEmpty(dataBasePath)) {
             reject('Paramètre manquant');
         }
         else {
+            console.log('-----dataBaseManager.getDataBase-----');
             dataBaseManager.getDataBase(collectionPath, dataBasePath)
                 .then(
                     db => {
+                        console.log('-----Resolve dataBaseManager.getDataBase-----');
                         dataBase = db;
+                        console.log('-----modelManager.initModel-----');
                         modelManager.initModel(dataBase);
                     },
                     err => reject(err)
                 )
                 .then(
-                    () => resolve(dataBase),
+                    () => {
+                        console.log('-----Resolve modelManager.initModel-----');
+                        resolve(dataBase);
+                    },
                     err => reject(err)
                 )
                 .catch(
@@ -39,8 +46,8 @@ const init = function (collectionPath, dataBasePath) {
 };
 
 module.exports.init = init;
-module.exports.getAll = crud.getAll;
-module.exports.get = crud.get;
-module.exports.save = crud.save;
-module.exports.update = crud.update;
-module.exports.remove = crud.remove;
+module.exports.getAll = (collection) => crud.getAll(collection);
+module.exports.get = (collection, query) => crud.get(collection, query);
+module.exports.save = (collection, data) => crud.preCrud(collection, data, crud.save);
+module.exports.update = (collection, query, data) => crud.preCrud(collection, query, data, crud.update);
+module.exports.remove = (collection, data) => crud.preCrud(collection, data, crud.remove);

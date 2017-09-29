@@ -11,7 +11,9 @@ const getModel = function (collection) {
             if (collection === 'schemas') {
                 dataBaseManager.getDataBase()
                     .then(
-                        db => addModelToList(collection, {name: 'string', mongoSchema: 'mixed'}, db)
+                        db => {
+                            addModelToList(collection, {name: 'string', mongoSchema: 'mixed'}, db);
+                        }
                     )
                     .then(
                         () => testModelList(collection),
@@ -58,15 +60,27 @@ const getModel = function (collection) {
 
 const createModelList = function (db) {
     return new Promise((resolve, reject) => {
+        console.log('-----crud.getAll-----');
         crud.getAll('schemas')
             .then(
                 schemas => {
+                    console.log('-----Resolve crud.getAll-----');
+                    let promises = [];
+                    console.log('-----addModelToList-----');
                     _.forEach(schemas,
-                        schema => addModelToList(schema.name, schema.content, db)
+                        schema => promises.push(addModelToList(schema.name, schema.content, db))
                     );
+                    Promise.all(promises);
+                },
+                err => reject(err)
+            )
+            .then(
+                () => {
+                    console.log('-----resolve addModelToList-----');
                     resolve(modelList);
                 },
-                err => reject(err))
+                err => reject(err)
+            )
             .catch(
                 exception => reject(exception)
             );

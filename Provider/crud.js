@@ -1,7 +1,8 @@
 const Promise = require('es6-promise').Promise;
 const modelManager = require('../Manager/modelManager');
+const _ = require('underscore');
 
-const getAll = function (collection) {
+const getAll = (collection) => {
     return new Promise((resolve, reject) => {
         modelManager.getModel(collection)
             .then(
@@ -16,7 +17,7 @@ const getAll = function (collection) {
     });
 };
 
-const get = function (collection, query) {
+const get = (collection, query) => {
     return new Promise((resolve, reject) => {
         modelManager.getModel(collection)
             .then(
@@ -33,7 +34,7 @@ const get = function (collection, query) {
     });
 };
 
-const save = function (data, collection) {
+const save = (collection, data) => {
     return new Promise((resolve, reject) => {
         modelManager.getModel(collection)
             .then(
@@ -53,13 +54,12 @@ const save = function (data, collection) {
     });
 };
 
-const update = function (collection, data) {
+const update = (collection, data, query) => {
     return new Promise((resolve, reject) => {
         modelManager.getModel(collection)
             .then(
                 model => {
-                    model(data);
-                    model.update();
+                    model.update(query, data);
                 },
                 err => reject(err)
             )
@@ -73,11 +73,11 @@ const update = function (collection, data) {
     });
 };
 
-const remove = function (collection) {
+const remove = (collection, data) => {
     return new Promise((resolve, reject) => {
         modelManager.getModel(collection)
             .then(
-                model => model.remove(),
+                model => model.remove(data),
                 err => reject(err)
             )
             .then(
@@ -90,8 +90,31 @@ const remove = function (collection) {
     });
 };
 
+const preCrud = (collection, query, data, crudFunction) => {
+    if(!_.isFunction(crudFunction)){
+        crudFunction = data;
+        data = query;
+        query = {};
+    }
+
+    return new Promise((resolve, reject) => {
+        if (!_.isArray(data)) {
+            data = [data];
+        }
+        let promises = [];
+        _.forEach(data, item => {
+            promises.push(crudFunction(collection, item, query));
+        });
+        Promise.all(promises).then(
+            () => resolve(data),
+            err => reject(err)
+        );
+    });
+};
+
 module.exports.getAll = getAll;
 module.exports.get = get;
 module.exports.save = save;
 module.exports.update = update;
 module.exports.remove = remove;
+module.exports.preCrud = preCrud;
