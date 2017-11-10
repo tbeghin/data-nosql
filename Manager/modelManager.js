@@ -60,13 +60,10 @@ const getModel = function (collection) {
 
 const createModelList = function (db) {
     return new Promise((resolve, reject) => {
-        console.log('-----crud.getAll-----');
         crud.getAll('schemas')
             .then(
                 schemas => {
-                    console.log('-----Resolve crud.getAll-----');
                     let promises = [];
-                    console.log('-----addModelToList-----');
                     _.forEach(schemas,
                         schema => promises.push(addModelToList(schema.name, schema.content, db))
                     );
@@ -76,7 +73,6 @@ const createModelList = function (db) {
             )
             .then(
                 () => {
-                    console.log('-----resolve addModelToList-----');
                     resolve(modelList);
                 },
                 err => reject(err)

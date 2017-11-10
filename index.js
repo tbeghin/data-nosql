@@ -14,26 +14,21 @@ let dataBase;
  * @returns {Promise<any>} Renvoi la base de donnée.
  */
 const init = function (collectionPath, dataBasePath) {
-    console.log('-----Init-----');
     return new Promise((resolve, reject) => {
         if (_.isEmpty(collectionPath) || _.isEmpty(dataBasePath)) {
             reject('Paramètre manquant');
         }
         else {
-            console.log('-----dataBaseManager.getDataBase-----');
             dataBaseManager.getDataBase(collectionPath, dataBasePath)
                 .then(
                     db => {
-                        console.log('-----Resolve dataBaseManager.getDataBase-----');
                         dataBase = db;
-                        console.log('-----modelManager.initModel-----');
                         modelManager.initModel(dataBase);
                     },
                     err => reject(err)
                 )
                 .then(
                     () => {
-                        console.log('-----Resolve modelManager.initModel-----');
                         resolve(dataBase);
                     },
                     err => reject(err)

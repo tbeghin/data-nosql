@@ -1,38 +1,66 @@
 /*eslint no-console: 0*/
 const datanosql = require('./index.js');
-const errorHandle = err => console.error(err);
+const errorHandle = (err, message) => console.error(`${message}\r\n Error : ${err}`);
 
 datanosql.init('test', 'mongodb://localhost:27017')
     .then(
         () => {
             console.log('-----Resolve Init-----');
-            datanosql.update(
+            datanosql.get(
                 'schemas',
-                {name: 'mytests'},
-                {name: 'mytests', mongoSchema: {name: 'string', age: 'number'}}
+                {name: 'mytests'}
             );
         },
-        errorHandle
+        err => errorHandle(err, 'Save Schema')
     )
     .then(
-        () => datanosql.getAll('schemas'),
-        errorHandle
+        data => {
+            console.log('-----Resolve Get-----');
+            if (!data) {
+                console.log('-No Data-');
+                datanosql.save(
+                    'schemas',
+                    {name: 'mytests', mongoSchema: {age: 'number'}}
+                );
+            } else {
+                console.log(data);
+                datanosql.update(
+                    'schemas',
+                    {name: 'mytests'},
+                    {name: 'mytests', mongoSchema: {name: 'string', age: 'number'}}
+                );
+            }
+        },
+        err => errorHandle(err, 'Init')
     )
     .then(
-        data => console.log(data),
-        errorHandle
+        () => {
+            console.log('-----Resolve Save/Update Schema-----');
+            datanosql.getAll('schemas');
+        },
+        err => errorHandle(err, 'Update')
     )
-    // .then(
-    //     () => datanosql.save(
-    //         'mytests',
-    //         [
-    //             {name: 'Test1', age: 1},
-    //             {name: 'Test2', age: 2},
-    //             {name: 'Test3', age: 3},
-    //             {name: 'Test4', age: 8}
-    //         ]),
-    //     errorHandle
-    // )
+    .then(
+        data => {
+            console.log('-----Resolve GetAll Schema-----');
+            console.log(data);
+        },
+        err => errorHandle(err, 'GetAll')
+    )
+    .then(
+        () => {
+            console.log('-----Resolve Console-----');
+            datanosql.save(
+                'mytests',
+                [
+                    {name: 'Test1', age: 1},
+                    {name: 'Test2', age: 2},
+                    {name: 'Test3', age: 3},
+                    {name: 'Test4', age: 8}
+                ]);
+        },
+        err => errorHandle(err, 'Console')
+    )
     // .then(
     //     () => datanosql.getAll('mytests'),
     //     errorHandle
@@ -65,6 +93,6 @@ datanosql.init('test', 'mongodb://localhost:27017')
     //     data => console.log(data),
     //     errorHandle
     // )
-    // .catch(
-    //     errorHandle
-    // );
+    .catch(
+        err => errorHandle(err, 'Catch')
+    );
