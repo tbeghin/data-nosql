@@ -1,6 +1,5 @@
 /*eslint no-console: 0*/
 const datanosql = require('./index.js');
-const errorHandle = (err, message) => console.error(`${message}\r\n Error : ${err}`);
 
 datanosql.init('test', 'mongodb://localhost:27017')
     .then(
@@ -31,7 +30,7 @@ datanosql.init('test', 'mongodb://localhost:27017')
                 );
             }
         },
-        err => errorHandle(err, 'Init')
+        err => errorHandle(err, 'Get')
     )
     .then(
         data => {
@@ -100,3 +99,9 @@ datanosql.init('test', 'mongodb://localhost:27017')
     .catch(
         err => errorHandle(err, 'Catch')
     );
+
+const errorHandle =
+    (err, message) => {
+        console.error(`${message}\r\n Error : ${err}`);
+        process.exit();
+    };
