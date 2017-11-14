@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
-mongoose.createConnection('mongodb://localhost/test', {useMongoClient: true}).then(
+mongoose.createConnection('mongodb://localhost/testMongo', {useMongoClient: true}).then(
     db => {
         let kittySchema = mongoose.Schema({
             name: String

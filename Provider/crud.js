@@ -1,5 +1,6 @@
 const Promise = require('es6-promise').Promise;
 const modelManager = require('../Manager/modelManager');
+const dataBaseManager = require('../Manager/dataBaseManager');
 const _ = require('underscore');
 
 const getAll = (collection) => {
@@ -45,7 +46,15 @@ const save = (collection, data) => {
                 err => reject(err)
             )
             .then(
-                docs => resolve(docs),
+                docs => {
+                    resolve(docs);
+                    if (collection === 'schemas') {
+                        dataBaseManager.getDataBase()
+                            .then(
+                                db => modelManager.initModel(db)
+                            );
+                    }
+                },
                 err => reject(err)
             )
             .catch(
@@ -58,13 +67,19 @@ const update = (collection, data, query) => {
     return new Promise((resolve, reject) => {
         modelManager.getModel(collection)
             .then(
-                model => {
-                    model.update(query, data);
-                },
+                model => model.updateMany(query, {$set: data}),
                 err => reject(err)
             )
             .then(
-                docs => resolve(docs),
+                docs => {
+                    resolve(docs);
+                    if (collection === 'schemas') {
+                        dataBaseManager.getDataBase()
+                            .then(
+                                db => modelManager.initModel(db)
+                            );
+                    }
+                },
                 err => reject(err)
             )
             .catch(
@@ -91,7 +106,7 @@ const remove = (collection, data) => {
 };
 
 const preCrud = (collection, query, data, crudFunction) => {
-    if(!_.isFunction(crudFunction)){
+    if (!_.isFunction(crudFunction)) {
         crudFunction = data;
         data = query;
         query = {};

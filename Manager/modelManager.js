@@ -65,7 +65,7 @@ const createModelList = function (db) {
                 schemas => {
                     let promises = [];
                     _.forEach(schemas,
-                        schema => promises.push(addModelToList(schema.name, schema.content, db))
+                        schema => promises.push(addModelToList(schema._doc.name, schema._doc.mongoSchema, db))
                     );
                     Promise.all(promises);
                 },

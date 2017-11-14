@@ -6,7 +6,7 @@ datanosql.init('test', 'mongodb://localhost:27017')
     .then(
         () => {
             console.log('-----Resolve Init-----');
-            datanosql.get(
+            return datanosql.get(
                 'schemas',
                 {name: 'mytests'}
             );
@@ -16,15 +16,15 @@ datanosql.init('test', 'mongodb://localhost:27017')
     .then(
         data => {
             console.log('-----Resolve Get-----');
-            if (!data) {
+            if (!data || data.length === 0) {
                 console.log('-No Data-');
-                datanosql.save(
+                return datanosql.save(
                     'schemas',
                     {name: 'mytests', mongoSchema: {age: 'number'}}
                 );
             } else {
                 console.log(data);
-                datanosql.update(
+                return datanosql.update(
                     'schemas',
                     {name: 'mytests'},
                     {name: 'mytests', mongoSchema: {name: 'string', age: 'number'}}
@@ -34,9 +34,10 @@ datanosql.init('test', 'mongodb://localhost:27017')
         err => errorHandle(err, 'Init')
     )
     .then(
-        () => {
+        data => {
             console.log('-----Resolve Save/Update Schema-----');
-            datanosql.getAll('schemas');
+            console.log(data);
+            return datanosql.getAll('schemas');
         },
         err => errorHandle(err, 'Update')
     )
@@ -50,7 +51,7 @@ datanosql.init('test', 'mongodb://localhost:27017')
     .then(
         () => {
             console.log('-----Resolve Console-----');
-            datanosql.save(
+            return datanosql.save(
                 'mytests',
                 [
                     {name: 'Test1', age: 1},
@@ -61,10 +62,13 @@ datanosql.init('test', 'mongodb://localhost:27017')
         },
         err => errorHandle(err, 'Console')
     )
-    // .then(
-    //     () => datanosql.getAll('mytests'),
-    //     errorHandle
-    // )
+    .then(
+        data => {
+            console.log('-----Resolve Save test-----');
+            console.log(data);
+        },
+        err => errorHandle(err, 'Save test')
+    )
     // .then(
     //     data => console.log(data),
     //     errorHandle
