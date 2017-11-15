@@ -41,18 +41,22 @@ const save = (collection, data) => {
             .then(
                 model => {
                     let saveData = new model(data);
-                    saveData.save();
+                    return saveData.save();
                 },
                 err => reject(err)
             )
             .then(
                 docs => {
-                    resolve(docs);
                     if (collection === 'schemas') {
                         dataBaseManager.getDataBase()
                             .then(
-                                db => modelManager.initModel(db)
+                                db => {
+                                    modelManager.initModel(db);
+                                    resolve(docs);
+                                }
                             );
+                    } else {
+                        resolve(docs);
                     }
                 },
                 err => reject(err)
@@ -72,12 +76,16 @@ const update = (collection, data, query) => {
             )
             .then(
                 docs => {
-                    resolve(docs);
                     if (collection === 'schemas') {
                         dataBaseManager.getDataBase()
                             .then(
-                                db => modelManager.initModel(db)
+                                db => {
+                                    modelManager.initModel(db);
+                                    resolve(docs);
+                                }
                             );
+                    } else {
+                        resolve(docs);
                     }
                 },
                 err => reject(err)

@@ -3,6 +3,12 @@ mongoose.Promise = require('es6-promise').Promise;
 const _ = require('underscore');
 let dbConnection;
 
+/**
+ * Méthode retournant la base de données.
+ * @param {string} collectionPath - Nom de la collection.
+ * @param {string} dataBasePath - Chemin de la base de données.
+ * @returns {Promise} La base de données.
+ */
 const getDataBase = function (collectionPath, dataBasePath) {
     return new Promise((resolve, reject) => {
         if (_.isUndefined(dbConnection)) {
@@ -17,7 +23,7 @@ const getDataBase = function (collectionPath, dataBasePath) {
                     );
             }
             else {
-                reject('Create database connection before.');
+                reject('La collection ou le chemin de base de données est vide.');
             }
         }
         else {
@@ -26,6 +32,13 @@ const getDataBase = function (collectionPath, dataBasePath) {
     });
 };
 
+/**
+ * @private
+ * Méthode permettant de créer la base de données.
+ * @param collectionPath {String} Nom de la collection.
+ * @param dataBasePath {String} Chemin de la base de données.
+ * @returns {Promise} La base de données.
+ */
 const createDataBase = function (collectionPath, dataBasePath) {
     return new Promise((resolve, reject) => {
         let connectionPath = `${dataBasePath}/${collectionPath}`;
